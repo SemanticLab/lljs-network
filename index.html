@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#192b2b" />
+    <meta
+      name="description"
+      content="Explore the interviewees, musicians and Brooklyn jazz shrines documented by the Linking Lost Jazz Shrines oral histories."
+    />
+    <title>Linking Lost Jazz Shrines</title>
+    <link rel="icon" href="assets/lljs-icon.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="assets/network.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap mast-inner">
+        <h1>
+          <a class="brand" href="#all"
+            ><img src="assets/lljs-icon.png" alt="" />Linking Lost Jazz
+            Shrines</a
+          >
+        </h1>
+        <nav aria-label="Main navigation">
+          <a class="current" href="#all"><i data-icon="network"></i>Network</a>
+          <button id="about"><i data-icon="book"></i>About the data</button>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <div class="workbench overview-only">
+        <section
+          class="graph-card"
+          aria-label="Interactive relationship network"
+        >
+          <div class="chart-bar">
+            <div class="view-tabs" role="group" aria-label="Graph view">
+              <button id="whole" aria-pressed="true">
+                <i data-icon="network"></i>Full network
+              </button>
+              <button id="focused" aria-pressed="false">
+                <i data-icon="focus"></i>Focus
+              </button>
+            </div>
+            <button id="find" class="search-button">
+              <i data-icon="search"></i><span>Find a person or shrine</span
+              ><kbd>/</kbd>
+            </button>
+          </div>
+          <div class="plot">
+            <div class="plot-bar">
+              <div>
+                <span id="mode" class="plot-caption">Relationship network</span>
+                <h2 id="plot-name" tabindex="-1">Full network</h2>
+              </div>
+              <label class="switch" id="edge-label-control" hidden
+                ><input type="checkbox" checked id="show-labels" /><span
+                  class="track"
+                ></span
+                >Edge labels</label
+              >
+            </div>
+            <svg id="graph" role="group" aria-label="Relationship graph"></svg>
+            <div class="graph-controls">
+              <div id="page-controls" hidden>
+                <button id="prev" aria-label="Previous connections">
+                  <i data-icon="left"></i>
+                </button>
+                <span id="page-count"></span>
+                <button id="next" aria-label="Next connections">
+                  <i data-icon="right"></i>
+                </button>
+              </div>
+              <div class="zoom">
+                <button id="out" aria-label="Zoom out">
+                  <i data-icon="minus"></i></button
+                ><button id="fit" title="Fit graph" aria-label="Fit graph">
+                  <i data-icon="fit"></i></button
+                ><button id="in" aria-label="Zoom in">
+                  <i data-icon="plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="graph-key">
+            <div class="legend">
+              <span><b class="dot interviewee"></b>Interviewee</span
+              ><span><b class="dot shrine"></b>Jazz shrine</span
+              ><span><b class="dot musician"></b>Musician</span>
+            </div>
+            <span class="gesture-hint">Scroll to zoom · Drag to pan</span>
+            <span id="graph-count"></span>
+          </div>
+        </section>
+        <aside class="inspector" hidden aria-label="Selected record">
+          <div class="panel-heading">
+            <i data-icon="file"></i>
+            <h2 id="panel-head">Node details</h2>
+          </div>
+          <div id="record"></div>
+        </aside>
+      </div>
+      <section class="shrine-index" aria-labelledby="shrine-title">
+        <div class="shrine-index-head">
+          <h2 id="shrine-title">
+            Browse shrines <span id="shrine-count" class="badge"></span>
+          </h2>
+          <label class="shrine-filter"
+            ><i data-icon="search"></i
+            ><input
+              id="shrine-filter"
+              type="search"
+              placeholder="Filter shrines"
+              aria-label="Filter shrines by name or alias"
+          /></label>
+        </div>
+        <ul id="shrine-list"></ul>
+        <p id="no-shrines" class="empty" hidden>
+          No shrines match this search.
+        </p>
+      </section>
+      <footer>
+        <span
+          >Linked Jazz <span class="slash">/</span> Linking Lost Jazz
+          Shrines</span
+        ><a
+          href="https://base.semlab.io/wiki/Item:Q18807"
+          target="_blank"
+          rel="noreferrer"
+          >Semantic Lab Wikibase <i data-icon="external"></i
+        ></a>
+      </footer>
+    </main>
+    <dialog id="directory" aria-labelledby="directory-title">
+      <div class="dialog-head">
+        <h2 id="directory-title">Find a person or shrine</h2>
+        <button class="icon-button" data-close aria-label="Close search">
+          <i data-icon="x"></i>
+        </button>
+      </div>
+      <label class="search-box"
+        ><i data-icon="search"></i
+        ><input
+          id="search"
+          type="search"
+          autocomplete="off"
+          placeholder="Search by name, alias or QID"
+          aria-label="Search directory"
+      /></label>
+      <div
+        id="types"
+        class="filter-bar"
+        role="group"
+        aria-label="Filter directory by node class"
+      ></div>
+      <p class="small-meta" id="found" aria-live="polite"></p>
+      <div id="matches" class="matches"></div>
+    </dialog>
+    <dialog id="info" aria-labelledby="info-title">
+      <div class="dialog-head">
+        <h2 id="info-title">About the data</h2>
+        <button class="icon-button" data-close aria-label="Close information">
+          <i data-icon="x"></i>
+        </button>
+      </div>
+      <h3>Who appears here</h3>
+      <dl class="definitions">
+        <dt>Interviewees</dt>
+        <dd>
+          People identified as interviewees in the project’s 27 processed
+          transcripts. An interviewee who also played jazz has one node.
+        </dd>
+        <dt>Jazz shrines</dt>
+        <dd>
+          Brooklyn places classified as shrines in the project atlas. A shrine
+          can have no recorded connections among the people shown here.
+        </dd>
+        <dt>Musicians</dt>
+        <dd>
+          Other people with a direct shrine relationship and evidence of musical
+          activity from Wikidata or the project. Each musician’s record gives
+          the basis for inclusion.
+        </dd>
+      </dl>
+      <h3>Reading the graph</h3>
+      <p>
+        Scroll over the graph to zoom in on names, or drag to pan. Select a node
+        to follow its connections. Select an edge to read its cited transcript
+        passages and open the original block records. In Focus view, edges show
+        relationship names and arrowheads follow the recorded direction. A number beside a label counts additional
+        relationships on that line.
+      </p>
+    </dialog>
+    <div class="sr-only" id="announce" aria-live="polite"></div>
+    <noscript>This explorer needs JavaScript to draw the network.</noscript>
+  </body>
+</html>
